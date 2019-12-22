@@ -15,11 +15,10 @@ open class CharactersAPI {
      
      - parameter name: (query) The name of the character 
      - parameter status: (query) date (optional)
-     - parameter page: (query) number of page (optional)
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func getAllCharacters(name: String, status: String? = nil, page: Int? = nil, completion: @escaping ((_ data: CharacterList?,_ error: Error?) -> Void)) {
-        getAllCharactersWithRequestBuilder(name: name, status: status, page: page).execute { (response, error) -> Void in
+    open class func getAllCharacters(name: String, status: String? = nil, completion: @escaping ((_ data: CharacterList?,_ error: Error?) -> Void)) {
+        getAllCharactersWithRequestBuilder(name: name, status: status).execute { (response, error) -> Void in
             completion(response?.body, error)
         }
     }
@@ -29,10 +28,9 @@ open class CharactersAPI {
      - GET /character/
      - parameter name: (query) The name of the character 
      - parameter status: (query) date (optional)
-     - parameter page: (query) number of page (optional)
      - returns: RequestBuilder<CharacterList> 
      */
-    open class func getAllCharactersWithRequestBuilder(name: String, status: String? = nil, page: Int? = nil) -> RequestBuilder<CharacterList> {
+    open class func getAllCharactersWithRequestBuilder(name: String, status: String? = nil) -> RequestBuilder<CharacterList> {
         let path = "/character/"
         let URLString = OpenAPIClientAPI.basePath + path
         let parameters: [String:Any]? = nil
@@ -40,8 +38,7 @@ open class CharactersAPI {
         var url = URLComponents(string: URLString)
         url?.queryItems = APIHelper.mapValuesToQueryItems([
             "name": name.encodeToJSON(), 
-            "status": status?.encodeToJSON(), 
-            "page": page?.encodeToJSON()
+            "status": status?.encodeToJSON()
         ])
 
         let requestBuilder: RequestBuilder<CharacterList>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()

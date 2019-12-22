@@ -10,11 +10,9 @@ import SwiftUI
 import UIKit
 import Alamofire
 import SwiftyJSON
-import SDWebImage
 
 final class CharacterListViewModel: ObservableObject {
     @Published private(set) var characters: [ModelCharacter] = []
-    @Published var pageIndex: Int = 1
     @Published var isNewPageLoading: Bool = false
     @Published var names = ["Rick", "Morty", "Summer"]
     @Published var currentCharacter = 0 {
@@ -38,7 +36,6 @@ final class CharacterListViewModel: ObservableObject {
             } else {
                 self.characters = characters?.results ?? []
             }
-            self.pageIndex += 1
             self.isNewPageLoading = false
         }
     }
@@ -69,31 +66,10 @@ struct ContentView: View {
                                 Text(character.species!)
                             }
                         }
-                        if self.characterListViewModel.isNewPageLoading && self.characterListViewModel.characters.isLastItem(character) {
-                            Divider()
-                            HStack {
-                                ActivityIndicator()
-                                Text("Loading...")
-                                .font(.system(.body))
-                                .fontWeight(.medium)
-                            }
-                        }
-                    }
-                    .onAppear {
-                        self.onItemShowed(character)
                     }
                 }
             }
             .navigationBarTitle("Rick and Morty")
-        }
-    }
-}
-
-extension ContentView {
-    private func onItemShowed<T:Identifiable>(_ item: T) {
-        // Load
-        if self.characterListViewModel.characters.isLastItem(item) {
-            self.characterListViewModel.loadCharacters()
         }
     }
 }

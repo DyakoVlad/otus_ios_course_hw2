@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UIKit
+import Alamofire
 
 struct ImageViewContainer: View {
     @EnvironmentObject private(set) var remoteImageURL: RemoteImageURL
@@ -16,7 +17,7 @@ struct ImageViewContainer: View {
         Image(uiImage: (remoteImageURL.data.isEmpty ? UIImage(named: "placeholder") : UIImage(data: remoteImageURL.data))!)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: 136, height: 201)
+            .frame(width: 100, height: 150)
     }
 }
 
@@ -25,13 +26,12 @@ class RemoteImageURL: ObservableObject {
     @Published var data = Data()
     
     init(imageURL: String) {
-        guard let url = URL(string: imageURL) else { return }
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            guard let data = data else { return }
-            
-            DispatchQueue.main.async {
-                self.data = data
+        Alamofire.request(imageURL).responseData(queue: .global(qos: .userInitiated)) { response in
+            if let data = response.value {
+                DispatchQueue.main.async {
+                    self.data = data
+                }
             }
-        }.resume()
+        }
     }
 }

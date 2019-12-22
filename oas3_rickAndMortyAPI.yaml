@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: Rick And Morty API
+  description: rickandmortyapi.com
+  version: 1.0.0
+servers:
+- url: https://rickandmortyapi.com/api
+tags:
+  - name: characters
+    description: All Rick And Morty characters
+paths:
+  /character/:
+    get:
+      tags: 
+        - characters
+      summary: Rick And Morty characters
+      operationId: getAllCharacters
+      parameters:
+      - name: name
+        in: query
+        description: The name of the character
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: date
+        schema:
+          type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CharacterList'
+        default:
+          description: enexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /character/{id}:
+      get:
+        tags:
+          - characters
+        summary: Rick And Morty characters
+        operationId: getCharacterById
+        parameters:
+        - name: id
+          in: path
+          description: The id of the character
+          required: true
+          schema:
+            type: integer
+        responses:
+          200:
+            description: success
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Character'
+          default:
+            description: enexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorModel'
+components:
+  schemas:
+    ErrorModel:
+      type: object
+      required:
+      - message
+      - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          minimum: 100
+          maximum: 600
+    CharacterList:
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/Info'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Character'
+    Character:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        species:
+          type: string
+        gender:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        image:
+          type: string
+    Info:
+      type: object
+      properties:
+        count:
+          type: integer
+        pages:
+          type: integer
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+      
