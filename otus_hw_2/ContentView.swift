@@ -55,15 +55,19 @@ struct ContentView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 List(characterListViewModel.characters) { character in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            ImageViewContainer()
-                                .environmentObject(RemoteImageURL(imageURL: character.image!))
-                            VStack(alignment: .leading) {
-                                Text(character.name!)
-                                    .font(.system(.headline))
-                                    .fontWeight(.heavy)
-                                Text(character.species!)
+                    NavigationLink(destination: CharacterView(character: character)) {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                ImageViewContainer()
+                                    .environmentObject(RemoteImageURL(imageURL: character.image!))
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 100, height: 150)
+                                VStack(alignment: .leading) {
+                                    Text(character.name!)
+                                        .font(.system(.headline))
+                                        .fontWeight(.heavy)
+                                    Text(character.species!)
+                                }
                             }
                         }
                     }
